@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.jeanhefler.library.exception.ResourceNotFound;
 import com.jeanhefler.library.model.Book;
 import com.jeanhefler.library.repository.BookRepository;
 
@@ -17,14 +18,14 @@ public class BookService {
     }
     
     //Create
-    public void createBook(Book book){
+    public Book createBook(Book book){
         if(book.getQuantity() > 0){
             book.setAvaliable(true);
         }
         else{
             book.setAvaliable(false);
         }
-        repository.save(book);
+        return repository.save(book);
     }
 
     //Read
@@ -32,7 +33,8 @@ public class BookService {
         return repository.findAll();
     }
     public Book getBookById(Long id){
-        return repository.findById(id).get();
+        return repository.findById(id).
+        orElseThrow(() -> new ResourceNotFound("Book not found"));
     }
 
     public List<Book> getBookByTitle(String title){
@@ -73,6 +75,8 @@ public class BookService {
 
     //Delete
     public void deleteBookById(Long id){
-        repository.deleteById(id);
+        Book book = repository.findById(id).
+        orElseThrow(() -> new ResourceNotFound("Book not found"));
+        repository.deleteById(book.getId());
     }
 }

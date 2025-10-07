@@ -2,6 +2,7 @@ package com.jeanhefler.library.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,37 +23,44 @@ public class BookController {
     }
     
     @GetMapping("/books")
-    public List<Book> getAllBooks(){
-        return service.listBooks();
+    public ResponseEntity<List<Book>> getAllBooks(){
+        List<Book> books = service.listBooks();
+        return ResponseEntity.status(200).body(books); 
     }
 
     @GetMapping("/books/{id}")
-    public Book getBookById(@PathVariable Long id){
-        return service.getBookById(id);
+    public ResponseEntity<Book> getBookById(@PathVariable Long id){
+        Book book = service.getBookById(id);
+        return ResponseEntity.status(200).body(book);
     }
 
     @GetMapping("/books/title/{title}")
-    public List<Book> getBooksByTitle(@PathVariable String title){
-        return service.getBookByTitle(title);
+    public ResponseEntity<List<Book>> getBooksByTitle(@PathVariable String title){
+        List<Book> books = service.getBookByTitle(title);
+        return ResponseEntity.status(200).body(books);
     }
 
     @GetMapping("/books/avaliable")
-        public List<Book> getAvaliableBooks(){
-            return service.getAvaliableBooks();
+        public ResponseEntity<List<Book>> getAvaliableBooks(){
+            List<Book> books = service.getAvaliableBooks();
+            return ResponseEntity.status(200).body(books);
         }
 
     @PostMapping("/books")
-    void createBook(@RequestBody Book newBook){
-        service.createBook(newBook);
+    public ResponseEntity<Book> createBook(@RequestBody Book newBook){
+        Book book = service.createBook(newBook);
+        return ResponseEntity.status(201).body(book);
     }
 
     @PutMapping("/books/{id}")
-    public Book updateBookById(@PathVariable Long id, @RequestBody Book updatedBook){
-        return service.updateBookById(id, updatedBook);
+    public ResponseEntity<Book> updateBookById(@PathVariable Long id, @RequestBody Book updatedBook){
+        Book book = service.updateBookById(id, updatedBook);
+        return ResponseEntity.status(201).body(book);
     }
 
     @DeleteMapping("/books/{id}")
-    public void deleteBookById(@PathVariable Long id){
+    public ResponseEntity<Book> deleteBookById(@PathVariable Long id){
         service.deleteBookById(id);
+        return ResponseEntity.status(204).build();
     }
 }
