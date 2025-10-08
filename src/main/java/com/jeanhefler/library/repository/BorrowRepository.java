@@ -13,5 +13,6 @@ public interface BorrowRepository extends JpaRepository<Borrow, Long> {
 
     List<Borrow> findBorrowByName(@Param(value = "name") String name);
     List<Borrow> findByisTeacherTrue();
+    List<Borrow> findByisTeacherFalse();
     
 }

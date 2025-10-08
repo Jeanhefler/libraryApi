@@ -2,6 +2,7 @@ package com.jeanhefler.library.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,37 +23,44 @@ public class BorrowController {
     }
     
     @PostMapping("/borrows")
-    public void createBook(@RequestBody Borrow newBorrow){
-        service.createBorrow(newBorrow);
+    public ResponseEntity<Borrow> createBorrow(@RequestBody Borrow newBorrow){
+        Borrow borrow = service.createBorrow(newBorrow);
+        return ResponseEntity.status(201).body(borrow);
     }
 
     @GetMapping("/borrows")
-    public List<Borrow> getAllBorrows(){
-        return service.findBorrows();
+    public ResponseEntity<List<Borrow>> getAllBorrows(){
+        List<Borrow> borrows = service.findBorrows();
+        return ResponseEntity.status(200).body(borrows);
     }
 
     @GetMapping("/borrows/{id}")
-    public Borrow getBorrowById(@PathVariable Long id){
-        return service.findBorrowById(id);
+    public ResponseEntity<Borrow> getBorrowById(@PathVariable Long id){
+        Borrow borrow = service.findBorrowById(id);
+        return ResponseEntity.status(200).body(borrow);
     }
 
-    @GetMapping("/borrows/name/{name}")
-    public List<Borrow> getBorrowByName(@PathVariable String name){
-        return service.findBorrowByName(name);
+    @GetMapping("/borrows/students")
+    public ResponseEntity<List<Borrow>> getBorrowByStudents(){
+        List<Borrow> borrows = service.findBorrowByStudents();
+        return ResponseEntity.status(200).body(borrows);
     }
 
     @GetMapping("/borrows/teacher")
-    public List<Borrow> getTeachers(){
-        return service.findBorrowByTeacher();
+    public ResponseEntity<List<Borrow>> getTeachers(){
+        List<Borrow> borrows = service.findBorrowByTeacher();
+        return ResponseEntity.status(200).body(borrows);
     }
 
     @PutMapping("/borrows/{id}")
-    public Borrow putBorrow(@PathVariable Long id, @RequestBody Borrow borrow){
-        return service.updateBorrowById(id, borrow);
+    public ResponseEntity<Borrow> putBorrow(@PathVariable Long id, @RequestBody Borrow updatedBorrow){
+        Borrow borrow = service.updateBorrowById(id, updatedBorrow);
+        return ResponseEntity.status(200).body(borrow);
     }
 
     @DeleteMapping("/borrows/{id}")
-    public void deleteBorrowById(@PathVariable Long id){
+    public ResponseEntity<Borrow> deleteBorrowById(@PathVariable Long id){
         service.deleteBorrowById(id);
+        return ResponseEntity.status(204).build();
     }
 }

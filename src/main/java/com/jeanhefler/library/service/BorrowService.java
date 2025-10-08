@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.jeanhefler.library.exception.ResourceNotFound;
 import com.jeanhefler.library.model.Borrow;
 import com.jeanhefler.library.repository.BorrowRepository;
 
@@ -17,14 +18,22 @@ public class BorrowService {
     }
 
     //Create
-    public void createBorrow(Borrow newBorrow){
-        if(newBorrow.isTeacher() == true){
-            newBorrow.setGrade(null);
+    public Borrow createBorrow(Borrow newBorrow){
+
+        if(newBorrow.getName() == null){
+            throw new IllegalArgumentException("Name can't be null");
         }
-        else if(newBorrow.isTeacher() == false && newBorrow.getGrade() == null){
-            throw new IllegalArgumentException("Alunos devem ter uma série definida");
+        if(newBorrow.getName().length() < 3){
+            throw new IllegalArgumentException("Name can't be minor that 3 characters");
         }
-        repository.save(newBorrow);
+        if(newBorrow.isTeacher() == false && newBorrow.getGrade() == null){
+            throw new IllegalArgumentException("Students should be in a grade");
+        }
+        if(newBorrow.isTeacher() == true && newBorrow.getGrade()!= null){
+            throw new IllegalArgumentException("Teachers should not be in a grade");
+        }
+        
+        return repository.save(newBorrow);
     }
 
     //read
@@ -33,11 +42,12 @@ public class BorrowService {
     }
 
     public Borrow findBorrowById(Long id){
-        return repository.findById(id).get();
+        return repository.findById(id).
+        orElseThrow(() -> new ResourceNotFound("Borrow not found"));
     }
     
-    public List<Borrow> findBorrowByName(String name){
-        return repository.findBorrowByName(name);
+    public List<Borrow> findBorrowByStudents(){
+        return repository.findByisTeacherFalse();
     }
 
     public List<Borrow> findBorrowByTeacher(){
@@ -46,27 +56,32 @@ public class BorrowService {
 
     //update
     public Borrow updateBorrowById(Long id, Borrow updatedBorrow){
-        Borrow borrow = repository.findById(id).get();
+        Borrow borrow = repository.findById(id).
+        orElseThrow(() -> new ResourceNotFound("Borrow not found"));
 
-        borrow.setTeacher(updatedBorrow.isTeacher());
-
-        if(updatedBorrow.isTeacher() == true){
-            borrow.setGrade(null);
-        }
-        else if(updatedBorrow.isTeacher() == false && updatedBorrow.getGrade() == null){
-            throw new IllegalArgumentException("Alunos devem ter uma série definida");
-        }
         if(updatedBorrow.getName() != null){
             borrow.setName(updatedBorrow.getName());
         }
-        if(updatedBorrow.getClass() != null){
+        if(updatedBorrow.getName().length() < 3){
+            throw new IllegalArgumentException("Name can't be minor that 3 characters");
+        }
+        if(updatedBorrow.getGrade() != borrow.getGrade()){
             borrow.setGrade(updatedBorrow.getGrade());
+        }
+        borrow.setTeacher(updatedBorrow.isTeacher());
+        if(borrow.getGrade() == null && borrow.isTeacher() == false){
+            throw new IllegalArgumentException("Students should be in a grade");
+        }
+        if(borrow.isTeacher() == true && borrow.getGrade() != null){
+            throw new IllegalArgumentException("Teachers can't be in a grade");
         }
         return repository.save(borrow);
     }
 
     //delete
     public void deleteBorrowById(Long id){
-        repository.deleteById(id);
+        Borrow borrow = repository.findById(id).
+        orElseThrow(() -> new ResourceNotFound("Borrow not found"));
+        repository.deleteById(borrow.getId());
     }
 }
