@@ -2,6 +2,7 @@ package com.jeanhefler.library.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,28 +23,33 @@ public class LoanController {
     }
 
     @PostMapping("/loans")
-    public Loan createLoan(@RequestBody Loan newLoan){
-        return service.createLoan(newLoan);
+    public ResponseEntity<Loan> createLoan(@RequestBody Loan newLoan){
+        Loan loan = service.createLoan(newLoan);
+        return ResponseEntity.status(201).body(loan);
     }
 
     @GetMapping("/loans")
-    public List<Loan> getAllLoans(){
-        return service.listAllLoans();
+    public ResponseEntity<List<Loan>> getAllLoans(){
+        List<Loan> loans = service.listAllLoans();
+        return ResponseEntity.status(200).body(loans);
     }
 
     @GetMapping("/loans/{id}")
-    public Loan getLoanById(@PathVariable Long id){
-        return service.listLoanById(id);
+    public ResponseEntity<Loan> getLoanById(@PathVariable Long id){
+        Loan loan = service.listLoanById(id);
+        return ResponseEntity.status(200).body(loan);
     }
 
     @PutMapping("/loans/{id}")
-    public Loan updateLoan(@PathVariable Long id, @RequestBody Loan updatedLoan){
-        return service.updateLoan(id, updatedLoan);
+    public ResponseEntity<Loan> updateLoan(@PathVariable Long id, @RequestBody Loan updatedLoan){
+        Loan loan = service.updateLoan(id, updatedLoan);
+        return ResponseEntity.status(200).body(loan);
     }
 
     @DeleteMapping("/loans/{id}")
-    public void deleteLoan(@PathVariable Long id){
+    public ResponseEntity<Loan> deleteLoan(@PathVariable Long id){
         service.deleteLoan(id);
+        return ResponseEntity.status(204).build();
     }
 
 }
