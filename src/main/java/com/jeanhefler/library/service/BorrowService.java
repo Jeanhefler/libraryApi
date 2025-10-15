@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.jeanhefler.library.exception.BadRequestException;
 import com.jeanhefler.library.exception.ResourceNotFound;
 import com.jeanhefler.library.model.Borrow;
 import com.jeanhefler.library.repository.BorrowRepository;
@@ -21,16 +22,16 @@ public class BorrowService {
     public Borrow createBorrow(Borrow newBorrow){
 
         if(newBorrow.getName() == null){
-            throw new IllegalArgumentException("Name can't be null");
+            throw new BadRequestException("Name can't be null");
         }
         if(newBorrow.getName().length() < 3){
-            throw new IllegalArgumentException("Name can't be minor that 3 characters");
+            throw new BadRequestException("Name can't be minor that 3 characters");
         }
         if(newBorrow.isTeacher() == false && newBorrow.getGrade() == null){
-            throw new IllegalArgumentException("Students should be in a grade");
+            throw new BadRequestException("Students should be in a grade");
         }
         if(newBorrow.isTeacher() == true && newBorrow.getGrade()!= null){
-            throw new IllegalArgumentException("Teachers should not be in a grade");
+            throw new BadRequestException("Teachers should not be in a grade");
         }
         
         return repository.save(newBorrow);
@@ -63,17 +64,17 @@ public class BorrowService {
             borrow.setName(updatedBorrow.getName());
         }
         if(updatedBorrow.getName().length() < 3){
-            throw new IllegalArgumentException("Name can't be minor that 3 characters");
+            throw new BadRequestException("Name can't be minor that 3 characters");
         }
         if(updatedBorrow.getGrade() != borrow.getGrade()){
             borrow.setGrade(updatedBorrow.getGrade());
         }
         borrow.setTeacher(updatedBorrow.isTeacher());
         if(borrow.getGrade() == null && borrow.isTeacher() == false){
-            throw new IllegalArgumentException("Students should be in a grade");
+            throw new BadRequestException("Students should be in a grade");
         }
         if(borrow.isTeacher() == true && borrow.getGrade() != null){
-            throw new IllegalArgumentException("Teachers can't be in a grade");
+            throw new BadRequestException("Teachers can't be in a grade");
         }
         return repository.save(borrow);
     }

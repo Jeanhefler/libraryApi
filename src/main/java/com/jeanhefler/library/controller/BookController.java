@@ -34,12 +34,6 @@ public class BookController {
         return ResponseEntity.status(200).body(book);
     }
 
-    @GetMapping("/books/title/{title}")
-    public ResponseEntity<List<Book>> getBooksByTitle(@PathVariable String title){
-        List<Book> books = service.getBookByTitle(title);
-        return ResponseEntity.status(200).body(books);
-    }
-
     @GetMapping("/books/avaliable")
         public ResponseEntity<List<Book>> getAvaliableBooks(){
             List<Book> books = service.getAvaliableBooks();

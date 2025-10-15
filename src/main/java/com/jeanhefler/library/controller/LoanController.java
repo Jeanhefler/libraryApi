@@ -1,6 +1,7 @@
 package com.jeanhefler.library.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jeanhefler.library.dto.LoanDto;
+import com.jeanhefler.library.mapper.LoanMapper;
 import com.jeanhefler.library.model.Loan;
 import com.jeanhefler.library.service.LoanService;
 
@@ -29,21 +32,29 @@ public class LoanController {
     }
 
     @GetMapping("/loans")
-    public ResponseEntity<List<Loan>> getAllLoans(){
+    public ResponseEntity<List<LoanDto>> getAllLoans(){
         List<Loan> loans = service.listAllLoans();
-        return ResponseEntity.status(200).body(loans);
+
+        List<LoanDto> loanDtos = loans.stream()
+        .map(LoanMapper::toDTO)
+        .collect(Collectors.toList());
+
+        return ResponseEntity.status(200).body(loanDtos);
     }
 
     @GetMapping("/loans/{id}")
-    public ResponseEntity<Loan> getLoanById(@PathVariable Long id){
+    public ResponseEntity<LoanDto> getLoanById(@PathVariable Long id){
         Loan loan = service.listLoanById(id);
-        return ResponseEntity.status(200).body(loan);
+
+        LoanDto dto = LoanMapper.toDTO(loan);
+        return ResponseEntity.status(200).body(dto);
     }
 
     @PutMapping("/loans/{id}")
-    public ResponseEntity<Loan> updateLoan(@PathVariable Long id, @RequestBody Loan updatedLoan){
+    public ResponseEntity<LoanDto> updateLoan(@PathVariable Long id, @RequestBody Loan updatedLoan){
         Loan loan = service.updateLoan(id, updatedLoan);
-        return ResponseEntity.status(200).body(loan);
+        LoanDto dto = LoanMapper.toDTO(loan);
+        return ResponseEntity.status(200).body(dto);
     }
 
     @DeleteMapping("/loans/{id}")
