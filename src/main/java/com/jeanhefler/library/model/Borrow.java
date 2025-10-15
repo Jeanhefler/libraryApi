@@ -13,7 +13,7 @@ public class Borrow {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String grade;
+    private int grade;
     private boolean isTeacher;
 
     public Long getId() {
@@ -28,10 +28,10 @@ public class Borrow {
     public void setName(String name) {
         this.name = name;
     }
-    public String getGrade() {
+    public int getGrade() {
         return grade;
     }
-    public void setGrade(String grade) {
+    public void setGrade(int grade) {
         this.grade = grade;
     }
     public boolean isTeacher() {

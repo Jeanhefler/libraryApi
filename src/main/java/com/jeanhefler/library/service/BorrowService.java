@@ -27,11 +27,14 @@ public class BorrowService {
         if(newBorrow.getName().length() < 3){
             throw new BadRequestException("Name can't be minor that 3 characters");
         }
-        if(newBorrow.isTeacher() == false && newBorrow.getGrade() == null){
+        if(newBorrow.isTeacher() == false && newBorrow.getGrade() == 0){
             throw new BadRequestException("Students should be in a grade");
         }
-        if(newBorrow.isTeacher() == true && newBorrow.getGrade()!= null){
+        if(newBorrow.isTeacher() == true && newBorrow.getGrade()!= 0){
             throw new BadRequestException("Teachers should not be in a grade");
+        }
+        if(newBorrow.getGrade() > 9 || newBorrow.getGrade() < 0){
+            throw new BadRequestException("grade range out: grade should be between 1 and 9");
         }
         
         return repository.save(newBorrow);
@@ -70,11 +73,14 @@ public class BorrowService {
             borrow.setGrade(updatedBorrow.getGrade());
         }
         borrow.setTeacher(updatedBorrow.isTeacher());
-        if(borrow.getGrade() == null && borrow.isTeacher() == false){
+        if(borrow.getGrade() == 0 && borrow.isTeacher() == false){
             throw new BadRequestException("Students should be in a grade");
         }
-        if(borrow.isTeacher() == true && borrow.getGrade() != null){
+        if(borrow.isTeacher() == true && borrow.getGrade() != 0){
             throw new BadRequestException("Teachers can't be in a grade");
+        }
+         if(borrow.getGrade() > 9 || borrow.getGrade() < 0){
+            throw new BadRequestException("grade range out: grade should be between 1 and 9");
         }
         return repository.save(borrow);
     }
