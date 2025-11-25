@@ -1,7 +1,8 @@
 package com.jeanhefler.library.infra.security;
 
 public enum UserRole {
-    ADMIN("admin");
+    ADMIN("admin"),
+    USER("user");
 
     private String role;
 
